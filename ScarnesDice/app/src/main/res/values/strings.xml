@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ScarnesDice</string>
+    <string name="score">Your score: 0 Computer score: 0</string>
+    <string name="tempScore">Hold Value: 0</string>
+    <string name="button1">Roll</string>
+    <string name="button2">Hold</string>
+    <string name="button3">Reset</string>
+</resources>
