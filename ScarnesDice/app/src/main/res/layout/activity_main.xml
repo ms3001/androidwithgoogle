@@ -37,7 +37,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="106dp">
 
         <Button
             android:text="@string/button1"
@@ -61,6 +61,18 @@
             android:layout_height="wrap_content"
             android:id="@+id/button3"
             android:layout_weight="1"
-            android:onClick="Reset"/>
+            android:onClick="Reset" />
+
     </LinearLayout>
+
+    <TextView
+        android:text="User Wins!"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/textView3"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:visibility="invisible" />
+
 </LinearLayout>

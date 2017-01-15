@@ -16,6 +16,7 @@ import android.graphics.drawable.Drawable;
 public class MainActivity extends AppCompatActivity {
 
     private static final int NUM_DICE_FACES = 6;
+    private static final int WIN_SCORE = 50;
 
     private int userScore;                  //global variables for scores used in game
     private int userTurnScore;
@@ -34,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
             compScore = 0;
             compTurnScore = 0;
             imgs = new int[]{R.drawable.dice0, R.drawable.dice1, R.drawable.dice2, R.drawable.dice3, R.drawable.dice4, R.drawable.dice5, R.drawable.dice6};
-
         }
 
     /**
@@ -67,8 +67,6 @@ public class MainActivity extends AppCompatActivity {
             updateScore(userTurnScore);
             startComputerTurn();
         }
-
-
     }
 
     /**
@@ -79,7 +77,9 @@ public class MainActivity extends AppCompatActivity {
         userScore += userTurnScore;         //userScore increased
         userTurnScore = 0;                  //turnScore set to 0
         updateScore(0);
-        startComputerTurn();
+        if (!checkForWin()) {               //if user did not win after hold, computer's turn starts
+            startComputerTurn();
+        }
     }
 
     /**
@@ -91,6 +91,45 @@ public class MainActivity extends AppCompatActivity {
         userScore = 0; userTurnScore = 0; compScore = 0; compTurnScore = 0;
         handler.removeCallbacks(timerRunnable);
         updateScore(userTurnScore);
+        Button one = (Button) findViewById(R.id.button1);
+        Button two = (Button) findViewById(R.id.button2);
+        one.setClickable(true);             //enable these buttons while user plays
+        two.setClickable(true);
+        one.setText("Roll");
+        two.setText("Hold");
+        ImageView imageView = (ImageView) findViewById(R.id.imageView1);
+        imageView.setImageResource(R.drawable.dice1);
+        TextView textView = (TextView) findViewById(R.id.textView3);
+        textView.setVisibility(TextView.INVISIBLE);
+    }
+
+    /**
+     * Function to check if either the user of the computer has won the game.
+     * @return true if the user has won the game, else false
+     */
+    public boolean checkForWin() {
+        TextView textView = (TextView) findViewById(R.id.textView3);
+        if (userScore >= WIN_SCORE) {
+            textView.setText("User Wins!");
+            textView.setVisibility(TextView.VISIBLE);
+            Button one = (Button) findViewById(R.id.button1);
+            Button two = (Button) findViewById(R.id.button2);
+            one.setClickable(false);            //disable these buttons while computer plays
+            two.setClickable(false);
+            one.setText("Game");
+            two.setText("over");
+            return true;
+        } else if (compScore >= WIN_SCORE) {
+            textView.setText("Computer Wins!");
+            textView.setVisibility(TextView.VISIBLE);
+            Button one = (Button) findViewById(R.id.button1);
+            Button two = (Button) findViewById(R.id.button2);
+            one.setClickable(false);            //disable these buttons while computer plays
+            two.setClickable(false);
+            one.setText("Game");
+            two.setText("over");
+        }
+        return false;
     }
 
     /**
@@ -98,11 +137,11 @@ public class MainActivity extends AppCompatActivity {
      * @return the dice roll value
      */
     public int RollTheDice() {
-        int diceRoll = random.nextInt(6) + 1;
+        int diceRoll = random.nextInt(NUM_DICE_FACES) + 1;
         TransitionDrawable td = new TransitionDrawable(new Drawable[] {getResources().getDrawable(imgs[0]),getResources().getDrawable(imgs[diceRoll])});
         ImageView imageView = (ImageView) findViewById(R.id.imageView1);
         imageView.setImageDrawable(td);
-        td.startTransition(1000);
+        td.startTransition(100);
         return diceRoll;
     }
 
@@ -142,9 +181,9 @@ public class MainActivity extends AppCompatActivity {
         Button two = (Button) findViewById(R.id.button2);
         one.setClickable(false);            //disable these buttons while computer plays
         two.setClickable(false);
-        one.setText("---");
-        two.setText("---");
-        handler.postDelayed(timerRunnable,0);
+        one.setText("Computer");
+        two.setText("turn");
+        handler.postDelayed(timerRunnable,2000);
     }
 
 
@@ -162,5 +201,6 @@ public class MainActivity extends AppCompatActivity {
         compScore += compTurnScore;
         compTurnScore = 0;
         updateScore(compTurnScore);
+        checkForWin();
     }
 }
