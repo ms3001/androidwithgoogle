@@ -43,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
     Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
+
+            if (compScore + compTurnScore >= WIN_SCORE) {
+                handler.postDelayed(timerRunnable2, 1000);
+                handler.removeCallbacks(timerRunnable);
+                return;
+            }
+
             if (compTurnScore < 20) {
                 handler.postDelayed(this, 1000);
                 computerTurn();
@@ -51,6 +58,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    /**
+     * Called by postDelay when computer turn ends
+     */
+    Runnable timerRunnable2 = new Runnable() {
+        @Override
+        public void run() {
+            endComputerTurn();
+        }
+    };
+
+
 
     /**
      * Called when user clicks on 'roll' button.
@@ -90,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
     public void Reset(View view) {
         userScore = 0; userTurnScore = 0; compScore = 0; compTurnScore = 0;
         handler.removeCallbacks(timerRunnable);
+        handler.removeCallbacks(timerRunnable2);
         updateScore(userTurnScore);
         Button one = (Button) findViewById(R.id.button1);
         Button two = (Button) findViewById(R.id.button2);
@@ -183,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         two.setClickable(false);
         one.setText("Computer");
         two.setText("turn");
-        handler.postDelayed(timerRunnable,2000);
+        handler.postDelayed(timerRunnable,1500);
     }
 
 
@@ -198,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
         one.setText("Roll");
         two.setText("Hold");
         handler.removeCallbacks(timerRunnable);
+        handler.removeCallbacks(timerRunnable2);
         compScore += compTurnScore;
         compTurnScore = 0;
         updateScore(compTurnScore);
