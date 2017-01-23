@@ -87,6 +87,7 @@ public class GhostActivity extends AppCompatActivity {
     public boolean onStart(View view) {
         userTurn = random.nextBoolean();
         TextView text = (TextView) findViewById(R.id.ghostText);
+        fragment = "";
         text.setText("");
         TextView label = (TextView) findViewById(R.id.gameStatus);
         if (userTurn) {
@@ -101,18 +102,20 @@ public class GhostActivity extends AppCompatActivity {
     private void computerTurn() {
         TextView label = (TextView) findViewById(R.id.gameStatus);
         label.setText(COMPUTER_TURN);
-        if (dictionary.isWord(fragment)) {          //If the fragment is a word, call it out
-            label.setText(FRAG_IS_WORD);
-            return;
-        } else {                                    //Else, look for a longer word
-            String guess = dictionary.getAnyWordStartingWith(fragment);
-            if (guess == null) {                    //If no longer words exist, call it out
-                label.setText(NO_OTHER_WORDS);
+        if (fragment.length() > 3) {
+            if (dictionary.isWord(fragment)) {      //If the fragment is a word, call it out
+                label.setText(FRAG_IS_WORD);
                 return;
-            } else {                                //Else, guess fragment + one more letter
-                int len = fragment.length();
-                updateFragment(guess.substring(0, len + 1));
             }
+        }
+                                                    //Else, look for a longer word
+        String guess = dictionary.getAnyWordStartingWith(fragment);
+        if (guess == null) {                        //If no longer words exist, call it out
+            label.setText(NO_OTHER_WORDS);
+            return;
+        } else {                                    //Else, guess fragment + one more letter
+            int len = fragment.length();
+            updateFragment(guess.substring(0, len + 1));
         }
         userTurn = true;
         label.setText(USER_TURN);

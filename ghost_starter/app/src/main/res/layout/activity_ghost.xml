@@ -55,6 +55,7 @@
         android:layout_height="wrap_content"
         android:text="Reset"
         android:id="@+id/button2"
+        android:onClick="onStart"
         android:layout_below="@id/button1"/>
 
 </RelativeLayout>
