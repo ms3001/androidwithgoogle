@@ -35,6 +35,8 @@ import java.util.Random;
 public class GhostActivity extends AppCompatActivity {
     private static final String COMPUTER_TURN = "Computer's turn";
     private static final String USER_TURN = "Your turn";
+    private static final String FRAG_IS_WORD = "You lose, you entered a word";
+    private static final String NO_OTHER_WORDS = "You lose, you entered a bad prefix";
     private GhostDictionary dictionary;
     private boolean userTurn = false;
     private String fragment = "";
@@ -98,7 +100,20 @@ public class GhostActivity extends AppCompatActivity {
 
     private void computerTurn() {
         TextView label = (TextView) findViewById(R.id.gameStatus);
-        // Do computer turn stuff then make it the user's turn again
+        label.setText(COMPUTER_TURN);
+        if (dictionary.isWord(fragment)) {          //If the fragment is a word, call it out
+            label.setText(FRAG_IS_WORD);
+            return;
+        } else {                                    //Else, look for a longer word
+            String guess = dictionary.getAnyWordStartingWith(fragment);
+            if (guess == null) {                    //If no longer words exist, call it out
+                label.setText(NO_OTHER_WORDS);
+                return;
+            } else {                                //Else, guess fragment + one more letter
+                int len = fragment.length();
+                updateFragment(guess.substring(0, len + 1));
+            }
+        }
         userTurn = true;
         label.setText(USER_TURN);
     }
@@ -113,20 +128,20 @@ public class GhostActivity extends AppCompatActivity {
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode >= 29 && keyCode <= 54) {
             updateFragment(fragment + (char) (keyCode + 68));
+            userTurn = false;
+            computerTurn();
             return true;
         }
-
         return super.onKeyUp(keyCode, event);
     }
 
+    /**
+     * Function to update the fragment shown on the UI.
+     * @param newFrag the new fragment to be shown
+     */
     public void updateFragment(String newFrag) {
         fragment = newFrag;
         TextView view = (TextView) findViewById(R.id.ghostText);
         view.setText(fragment);
-        if (dictionary.isWord(fragment)) {
-            TextView label = (TextView) findViewById(R.id.gameStatus);
-            label.setText("Word Exists");
-        }
-
     }
 }
