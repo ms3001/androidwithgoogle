@@ -36,7 +36,10 @@ public class GhostActivity extends AppCompatActivity {
     private static final String COMPUTER_TURN = "Computer's turn";
     private static final String USER_TURN = "Your turn";
     private static final String FRAG_IS_WORD = "You lose, you entered a word";
+    private static final String FRAG_IS_WORD_COMP = "You win, comp entered a word";
     private static final String NO_OTHER_WORDS = "You lose, you entered a bad prefix";
+    private static final String OTHER_WORD = "You lose, challenge failed";
+
     private GhostDictionary dictionary;
     private boolean userTurn = false;
     private String fragment = "";
@@ -97,6 +100,20 @@ public class GhostActivity extends AppCompatActivity {
             computerTurn();
         }
         return true;
+    }
+
+    public void challenge(View view) {
+        TextView label = (TextView) findViewById(R.id.gameStatus);
+        TextView word = (TextView) findViewById(R.id.ghostText);
+        if (dictionary.isWord(fragment)) {
+            if(fragment.length() > 3) {
+                label.setText(FRAG_IS_WORD_COMP);
+                return;
+            }
+        } else {
+            word.setText(dictionary.getAnyWordStartingWith(fragment));
+            label.setText(OTHER_WORD);
+        }
     }
 
     private void computerTurn() {

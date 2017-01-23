@@ -48,6 +48,7 @@
         android:layout_height="wrap_content"
         android:text="Challenge word"
         android:id="@+id/button1"
+        android:onClick="challenge"
         android:layout_below="@id/gameStatus"/>
 
     <Button
