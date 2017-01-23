@@ -23,6 +23,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class GhostActivity extends AppCompatActivity {
     private static final String USER_TURN = "Your turn";
     private GhostDictionary dictionary;
     private boolean userTurn = false;
+    private String fragment = "";
     private Random random = new Random();
 
     @Override
@@ -43,11 +45,11 @@ public class GhostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ghost);
         AssetManager assetManager = getAssets();
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        try {
+            dictionary = new SimpleDictionary(getAssets().open("words.txt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         onStart(null);
     }
 
@@ -55,6 +57,7 @@ public class GhostActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_ghost, menu);
+
         return true;
     }
 
@@ -108,11 +111,22 @@ public class GhostActivity extends AppCompatActivity {
      */
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        if (keyCode >= 29 && keyCode <= 54) {
+            updateFragment(fragment + (char) (keyCode + 68));
+            return true;
+        }
+
         return super.onKeyUp(keyCode, event);
+    }
+
+    public void updateFragment(String newFrag) {
+        fragment = newFrag;
+        TextView view = (TextView) findViewById(R.id.ghostText);
+        view.setText(fragment);
+        if (dictionary.isWord(fragment)) {
+            TextView label = (TextView) findViewById(R.id.gameStatus);
+            label.setText("Word Exists");
+        }
+
     }
 }
