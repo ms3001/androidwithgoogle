@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.TreeSet;
 
 public class SimpleDictionary implements GhostDictionary {
     private ArrayList<String> words;
@@ -48,7 +50,6 @@ public class SimpleDictionary implements GhostDictionary {
         if (prefix.equals("")) {                        //If prefix empty return random word
             return words.get(random.nextInt(words.size()));
         }                                               //Else search for a word
-        search(0, words.size() - 1, prefix);
 
         int low = 0;
         int high = words.size() - 1;
@@ -69,23 +70,6 @@ public class SimpleDictionary implements GhostDictionary {
             }
         }
 
-
-
-        return null;
-    }
-
-    public String search(int low, int high, String prefix) {
-
-        int index = (low + high) / 2;
-
-        if (prefix.compareTo(words.get(index)) < 0) { //word at index is closer to z
-            high = index - 1;
-
-        } else if (prefix.compareTo(words.get(index)) > 0) { //word at index is closer to a
-
-        } else {                                       //the two are the same
-
-        }
         return null;
     }
 
@@ -93,7 +77,56 @@ public class SimpleDictionary implements GhostDictionary {
 
     @Override
     public String getGoodWordStartingWith(String prefix) {
+        if (prefix.equals("")) {                        //If prefix empty return random word
+            return words.get(random.nextInt(words.size()));
+        }
+
         String selected = null;
+        TreeSet<String> output = new TreeSet<>();
+
+        int low = 0;
+        int high = words.size() - 1;
+
+        while (high >= low) {
+            int index = (low + high) / 2;
+            if (prefix.compareTo(words.get(index)) < 0) { //word at index is closer to z
+                if(words.get(index).length() > prefix.length()) {
+                    if(words.get(index).substring(0,prefix.length()).equals(prefix)) {
+                        output.add(words.get(index));
+                        low++;
+                    } else {
+                        high = index - 1;
+                    }
+                } else {
+                    high = index - 1;
+                }
+            } else if (prefix.compareTo(words.get(index)) > 0) { //word at index is closer to a
+                low = index + 1;
+            } else {                                       //the two are the same
+                low++;
+            }
+        }
+
+        if (output.size() != 0) {               //if we found some words
+            System.out.println(output.toString());
+            ArrayList<String> goodOnes = new ArrayList<>();
+            ArrayList<String> badOnes = new ArrayList<>();
+
+            for (int i=0; i<output.size(); i++) {
+                String temp = output.pollFirst();
+                if ((temp.length() - prefix.length()) % 2 == 0) {
+                    goodOnes.add(temp);
+                } else {
+                    badOnes.add(temp);
+                }
+            }
+            if (goodOnes.size() != 0) {
+                selected = goodOnes.get(random.nextInt(goodOnes.size()));
+            } else {
+                selected = badOnes.get(random.nextInt(badOnes.size()));
+            }
+        }
+
         return selected;
     }
 }

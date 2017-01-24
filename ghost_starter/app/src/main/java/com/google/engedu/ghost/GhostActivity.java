@@ -102,6 +102,10 @@ public class GhostActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Handler for the challenge button.
+     * @param view the view
+     */
     public void challenge(View view) {
         TextView label = (TextView) findViewById(R.id.gameStatus);
         TextView word = (TextView) findViewById(R.id.ghostText);
@@ -116,6 +120,9 @@ public class GhostActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Function to handle the logic for computer turns.
+     */
     private void computerTurn() {
         TextView label = (TextView) findViewById(R.id.gameStatus);
         label.setText(COMPUTER_TURN);
@@ -126,7 +133,7 @@ public class GhostActivity extends AppCompatActivity {
             }
         }
                                                     //Else, look for a longer word
-        String guess = dictionary.getAnyWordStartingWith(fragment);
+        String guess = dictionary.getGoodWordStartingWith(fragment);
         if (guess == null) {                        //If no longer words exist, call it out
             label.setText(NO_OTHER_WORDS);
             return;
