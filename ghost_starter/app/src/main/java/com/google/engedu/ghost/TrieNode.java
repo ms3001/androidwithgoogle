@@ -16,6 +16,8 @@
 package com.google.engedu.ghost;
 
 import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.Random;
 
 
 public class TrieNode {
@@ -28,17 +30,93 @@ public class TrieNode {
     }
 
     public void add(String s) {
+        if (s.length() == 1) {
+            if (this.children.containsKey(s)) {
+                TrieNode child = this.children.get(s);
+                child.isWord = true;
+            } else {
+                TrieNode child = new TrieNode();
+                child.isWord = true;
+                this.children.put(s, child);
+            }
+        } else {
+            if (this.children.containsKey(s.substring(0,1))) {
+                TrieNode child = this.children.get(s.substring(0,1));
+                child.add(s.substring(1));
+                this.children.put(s.substring(0,1), child);
+            } else {
+                TrieNode child = new TrieNode();
+                child.add(s.substring(1));
+                this.children.put(s.substring(0,1), child);
+            }
+        }
     }
 
     public boolean isWord(String s) {
-      return false;
+        if (s.length() == 1) {
+            if (this.children.containsKey(s)) {
+                return this.children.get(s).isWord;
+            } else {
+                return false;
+            }
+        } else {
+            if (this.children.containsKey(s.substring(0,1))) {
+                return this.children.get(s.substring(0,1)).isWord(s.substring(1));
+            } else {
+                return false;
+            }
+        }
     }
 
     public String getAnyWordStartingWith(String s) {
-        return null;
+
+        String out = findWordRecursive(this, s, 0);
+        System.out.println(s+out);
+        if (out == null) {
+            return null;
+        } else {
+            return s + out;
+        }
+
+    }
+
+    private String findWordRecursive(TrieNode curr, String s, int index) {
+        String chosen = "";
+        if (index < s.length()) {      //if looking for frag parts
+
+            if (curr.children.containsKey(s.substring(index,index+1))) {
+                curr = curr.children.get(s.substring(index,index+1));
+                index++;
+
+            } else {
+                return null;
+            }
+
+        } else {                        //traversing tree
+            if (curr.children.isEmpty()) {
+                return "";
+            } else {
+                Random rand = new Random();
+                Object [] possiblePaths = curr.children.keySet().toArray();
+                chosen = (String) possiblePaths[rand.nextInt(possiblePaths.length)];
+                curr = curr.children.get(chosen);
+            }
+        }
+
+        String part2 = findWordRecursive(curr, s, index);
+        if (part2 == null) {
+            return null;
+        } else {
+            return chosen + part2;
+        }
     }
 
     public String getGoodWordStartingWith(String s) {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return this.children.keySet() + this.children.toString();
     }
 }

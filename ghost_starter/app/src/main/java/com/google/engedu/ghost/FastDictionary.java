@@ -34,6 +34,7 @@ public class FastDictionary implements GhostDictionary {
             if (word.length() >= MIN_WORD_LENGTH)
                 root.add(line.trim());
         }
+        System.out.println(root);
     }
     @Override
     public boolean isWord(String word) {

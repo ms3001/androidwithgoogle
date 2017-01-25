@@ -108,7 +108,6 @@ public class SimpleDictionary implements GhostDictionary {
         }
 
         if (output.size() != 0) {               //if we found some words
-            System.out.println(output.toString());
             ArrayList<String> goodOnes = new ArrayList<>();
             ArrayList<String> badOnes = new ArrayList<>();
 

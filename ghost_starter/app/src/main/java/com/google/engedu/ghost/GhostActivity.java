@@ -51,7 +51,7 @@ public class GhostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ghost);
         AssetManager assetManager = getAssets();
         try {
-            dictionary = new SimpleDictionary(getAssets().open("words.txt"));
+            dictionary = new FastDictionary(getAssets().open("words.txt"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -133,7 +133,7 @@ public class GhostActivity extends AppCompatActivity {
             }
         }
                                                     //Else, look for a longer word
-        String guess = dictionary.getGoodWordStartingWith(fragment);
+        String guess = dictionary.getAnyWordStartingWith(fragment);
         if (guess == null) {                        //If no longer words exist, call it out
             label.setText(NO_OTHER_WORDS);
             return;
